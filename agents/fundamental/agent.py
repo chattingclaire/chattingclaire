@@ -172,28 +172,105 @@ class FundamentalAgent(BaseAgent):
             return None
 
     def _fetch_company_info(self, ticker: str) -> Dict[str, Any]:
-        """Fetch basic company information."""
-        # TODO: Implement using yfinance or other API
-        return {
-            "name": f"Company {ticker}",
-            "sector": "Technology",
-            "industry": "Software",
-            "description": "Company description placeholder",
-            "market_cap": 1000000000,
-        }
+        """Fetch basic company information using Tushare + AKShare."""
+        from tools.datasources.tushare_tool import tushare_api
+        from tools.datasources.akshare_tool import akshare_api
+
+        try:
+            # 判断市场
+            if len(ticker) == 6 and ticker.isdigit():
+                # A股/港股 - 使用 Tushare + AKShare
+                ts_code = tushare_api.normalize_ticker(ticker)
+
+                # Tushare: 基本信息
+                basic = tushare_api.get_stock_basic(ts_code)
+                company = tushare_api.get_company_info(ts_code)
+
+                # AKShare: 补充实时信息
+                realtime = akshare_api.get_stock_individual_info(ticker)
+
+                return {
+                    "name": basic.get("name") or company.get("chairman"),
+                    "sector": basic.get("industry"),
+                    "industry": basic.get("industry"),
+                    "description": company.get("introduction"),
+                    "market_cap": realtime.get("总市值"),
+                    "gics_sector": basic.get("industry"),
+                    "gics_industry": basic.get("industry"),
+                }
+            else:
+                # 美股 - 使用 yfinance
+                import yfinance as yf
+                stock = yf.Ticker(ticker)
+                info = stock.info
+
+                return {
+                    "name": info.get("longName"),
+                    "sector": info.get("sector"),
+                    "industry": info.get("industry"),
+                    "description": info.get("longBusinessSummary"),
+                    "market_cap": info.get("marketCap"),
+                    "gics_sector": info.get("sector"),
+                    "gics_industry": info.get("industry"),
+                }
+        except Exception as e:
+            logger.error(f"Error fetching company info: {e}")
+            return {
+                "name": f"Company {ticker}",
+                "sector": "Unknown",
+                "industry": "Unknown",
+                "description": "",
+                "market_cap": 0,
+            }
 
     def _fetch_financials(self, ticker: str) -> Dict[str, Any]:
-        """Fetch financial metrics."""
-        # TODO: Implement using financial data APIs
-        return {
-            "revenue": 10000000000,
-            "net_income": 2000000000,
-            "gross_margin": 0.60,
-            "operating_margin": 0.30,
-            "net_margin": 0.20,
-            "roe": 0.25,
-            "roa": 0.15,
-        }
+        """Fetch financial metrics using Tushare."""
+        from tools.datasources.tushare_tool import tushare_api
+
+        try:
+            if len(ticker) == 6 and ticker.isdigit():
+                # A股 - 使用 Tushare
+                ts_code = tushare_api.normalize_ticker(ticker)
+
+                # 获取最新财务数据
+                income = tushare_api.get_income_statement(ts_code)
+                indicators = tushare_api.get_financial_indicators(ts_code)
+
+                return {
+                    "revenue": income.get("revenue"),
+                    "net_income": income.get("n_income"),
+                    "gross_margin": indicators.get("grossprofit_margin"),
+                    "operating_margin": indicators.get("op_income_margin"),
+                    "net_margin": indicators.get("netprofit_margin"),
+                    "roe": indicators.get("roe"),
+                    "roa": indicators.get("roa"),
+                }
+            else:
+                # 美股 - 使用 yfinance
+                import yfinance as yf
+                stock = yf.Ticker(ticker)
+                info = stock.info
+
+                return {
+                    "revenue": info.get("totalRevenue"),
+                    "net_income": info.get("netIncome"),
+                    "gross_margin": info.get("grossMargins"),
+                    "operating_margin": info.get("operatingMargins"),
+                    "net_margin": info.get("profitMargins"),
+                    "roe": info.get("returnOnEquity"),
+                    "roa": info.get("returnOnAssets"),
+                }
+        except Exception as e:
+            logger.error(f"Error fetching financials: {e}")
+            return {
+                "revenue": 0,
+                "net_income": 0,
+                "gross_margin": 0,
+                "operating_margin": 0,
+                "net_margin": 0,
+                "roe": 0,
+                "roa": 0,
+            }
 
     def _calculate_valuation(
         self, ticker: str, financials: Dict[str, Any]
@@ -243,6 +320,17 @@ class FundamentalAgent(BaseAgent):
         }
 
     def _fetch_recent_news(self, ticker: str) -> List[Dict[str, Any]]:
-        """Fetch recent news about the ticker."""
-        # TODO: Implement news fetching
-        return []
+        """Fetch recent news using AKShare."""
+        from tools.datasources.akshare_tool import akshare_api
+
+        try:
+            if len(ticker) == 6 and ticker.isdigit():
+                # A股 - 使用 AKShare 获取新闻
+                news = akshare_api.get_stock_news(ticker, limit=20)
+                return news
+            else:
+                # 美股 - TODO: 实现美股新闻
+                return []
+        except Exception as e:
+            logger.error(f"Error fetching news: {e}")
+            return []
