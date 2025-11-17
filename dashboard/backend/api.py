@@ -10,12 +10,18 @@ from database import get_db
 from agents import TradingAgent
 from memory import ContextManager
 
+# Import search API router
+from .search_api import router as search_router
+
 # Initialize FastAPI app
 app = FastAPI(
     title="Multi-Agent Trading System Dashboard",
     description="Dashboard API for WeChat-driven trading system",
     version="1.0.0",
 )
+
+# Include search API routes
+app.include_router(search_router)
 
 # Add CORS middleware
 app.add_middleware(

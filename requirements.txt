@@ -47,9 +47,10 @@ backtrader>=1.9.0
 ta-lib>=0.4.0
 
 # Memory & Context
-chromadb>=0.4.0
 langchain>=0.1.0
-minecontext>=0.1.0
+langchain-community>=0.0.20
+langchain-openai>=0.0.5
+faiss-cpu>=1.7.4
 
 # Dashboard
 fastapi>=0.104.0
