@@ -29,7 +29,6 @@ beautifulsoup4>=4.12.0
 
 # Financial Data
 yfinance>=0.2.0
-akshare>=1.12.0
 tushare>=1.4.0
 openbb>=4.0.0
 pandas>=2.0.0
