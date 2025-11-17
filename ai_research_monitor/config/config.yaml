@@ -1,0 +1,159 @@
+# AI Research Monitor - 配置文件
+
+# API 配置
+apis:
+  # OpenAI API（用于内容分析和文章生成）
+  openai:
+    api_key: ${OPENAI_API_KEY}  # 从环境变量读取
+    model: "gpt-4-turbo-preview"
+    temperature: 0.7
+
+  # Anthropic Claude API（备选）
+  anthropic:
+    api_key: ${ANTHROPIC_API_KEY}
+    model: "claude-3-5-sonnet-20241022"
+    max_tokens: 4000
+
+  # Twitter API
+  twitter:
+    bearer_token: ${TWITTER_BEARER_TOKEN}
+    # 或使用替代方案（nitter, snscrape等）
+    use_alternative: true
+
+  # Reddit API
+  reddit:
+    client_id: ${REDDIT_CLIENT_ID}
+    client_secret: ${REDDIT_CLIENT_SECRET}
+    user_agent: "AI Research Monitor Bot"
+
+# 监控配置
+monitoring:
+  # 关注的主题领域
+  topics:
+    - "AI"
+    - "Artificial Intelligence"
+    - "具身智能"
+    - "Embodied AI"
+    - "机器人"
+    - "Robotics"
+    - "多模态"
+    - "Multimodal"
+    - "LLM"
+    - "Large Language Model"
+    - "Agent"
+    - "AGI"
+
+  # Twitter 监控
+  twitter:
+    # 关注的关键账号
+    key_accounts:
+      - "AndrewYNg"
+      - "ylecun"
+      - "karpathy"
+      - "sama"
+      - "OpenAI"
+      - "AnthropicAI"
+      - "GoogleAI"
+      - "DeepMind"
+      - "huggingface"
+      - "DrJimFan"
+      - "hardmaru"
+
+    # 搜索查询
+    search_queries:
+      - "embodied AI"
+      - "robotics AI"
+      - "humanoid robot"
+      - "AI agent"
+      - "vision language model"
+
+    # 每次抓取的数量
+    fetch_limit: 100
+
+  # Reddit 监控
+  reddit:
+    subreddits:
+      - "MachineLearning"
+      - "artificial"
+      - "LocalLLaMA"
+      - "singularity"
+      - "robotics"
+
+    # 排序方式：hot, new, top
+    sort_by: "hot"
+    fetch_limit: 50
+
+# 内容筛选配置
+filtering:
+  # 最小互动量（Twitter）
+  min_engagement:
+    likes: 100
+    retweets: 20
+
+  # 内容质量评分阈值（AI评分，0-10分）
+  min_quality_score: 6.5
+
+  # 优先级关键词（加权）
+  priority_keywords:
+    high:  # 高优先级（2x权重）
+      - "breakthrough"
+      - "融资"
+      - "funding"
+      - "发布"
+      - "released"
+      - "开源"
+      - "open source"
+      - "论文"
+      - "paper"
+    medium:  # 中优先级（1.5x权重）
+      - "demo"
+      - "测试"
+      - "benchmark"
+      - "性能"
+      - "performance"
+
+  # 排除的内容类型
+  exclude:
+    - "广告"
+    - "招聘"
+    - "hiring"
+    - "纯转发无评论"
+
+# 报告生成配置
+generation:
+  # 使用的 LLM
+  llm_provider: "anthropic"  # 可选: openai, anthropic
+
+  # 文章长度
+  article_length: "medium"  # short(800-1200), medium(1500-2500), long(3000-5000)
+
+  # 输出格式
+  output_format: "wechat"  # wechat(公众号), markdown, html
+
+  # 每日生成数量
+  daily_articles: 1-2
+
+  # 是否包含参考链接
+  include_references: true
+
+# 输出配置
+output:
+  # 输出目录
+  directory: "./outputs"
+
+  # 文件命名格式
+  filename_format: "{date}_{topic}_{type}.md"
+
+  # 是否保存原始数据
+  save_raw_data: true
+
+# 调度配置
+schedule:
+  # 是否启用定时任务
+  enabled: false
+
+  # 运行时间（24小时制）
+  daily_run_time: "09:00"
+
+  # 时区
+  timezone: "Asia/Shanghai"
