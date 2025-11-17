@@ -1,0 +1,81 @@
+tools:
+  # Agent 1: wx_source_agent
+  wx_source_agent:
+    - wechat_parser
+    - pdf_extractor
+    - ocr_tool
+    - image_analyzer
+    - text_cleaner
+    - time_parser
+    - attachment_handler
+
+  # Agent 2: external_source_agent
+  external_source_agent:
+    - twitter_fetcher
+    - reddit_scraper
+    - github_trending
+    - producthunt_api
+    - news_aggregator
+    - rss_reader
+    - edgar_filings
+    - hkex_announcements
+    - cninfo_crawler
+
+  # Agent 3: selection_agent
+  selection_agent:
+    - sentiment_analyzer
+    - entity_extractor
+    - ticker_mapper
+    - signal_aggregator
+    - confidence_scorer
+    - wechat_weight_calculator
+    - evidence_collector
+    - datasource_mcp
+
+  # Agent 4: fundamental_agent
+  fundamental_agent:
+    - tushare_tool
+    - akshare_tool
+    - yahoo_finance_tool
+    - eastmoney_tool
+    - edgar_tool
+    - openbb_tool
+    - fundamentals_calculator
+    - dcf_model
+    - valuation_metrics
+
+  # Agent 5: strategy_agent
+  strategy_agent:
+    - strategy_builder
+    - signal_combiner
+    - risk_calculator
+    - position_sizer
+    - backtest_engine
+    - factor_analyzer
+    - momentum_calculator
+    - fundamentals_api
+
+  # Agent 6: trading_agent
+  trading_agent:
+    - paper_trading_executor
+    - order_manager
+    - portfolio_tracker
+    - performance_analyzer
+    - dashboard_api
+    - chart_generator
+    - backtest_visualizer
+
+# MCP (Model Context Protocol) Configuration
+mcp:
+  servers:
+    datasource_mcp:
+      command: "python"
+      args: ["tools/datasources/mcp_server.py"]
+      env:
+        MCP_SERVER_NAME: "datasource"
+
+    trading_mcp:
+      command: "python"
+      args: ["tools/trading/mcp_server.py"]
+      env:
+        MCP_SERVER_NAME: "trading"

@@ -1,0 +1,69 @@
+models:
+  # Primary model for agents
+  primary:
+    provider: "anthropic"
+    model: "claude-sonnet-4-5-20250929"
+    temperature: 0.7
+    max_tokens: 8000
+    cache_control:
+      enabled: true
+      type: "persistent"
+    kv_cache:
+      enabled: true
+      max_age: 86400
+
+  # Alternative models
+  alternatives:
+    openai:
+      provider: "openai"
+      model: "gpt-4-turbo-preview"
+      temperature: 0.7
+      max_tokens: 4000
+
+    deepseek:
+      provider: "deepseek"
+      model: "deepseek-chat"
+      temperature: 0.7
+      max_tokens: 4000
+
+    kimi:
+      provider: "moonshot"
+      model: "moonshot-v1-8k"
+      temperature: 0.7
+      max_tokens: 8000
+
+# Agent-specific model assignments
+agent_models:
+  wx_source_agent:
+    model: "primary"
+    cache_namespace: "wx_source"
+
+  external_source_agent:
+    model: "primary"
+    cache_namespace: "external_source"
+
+  selection_agent:
+    model: "primary"
+    cache_namespace: "selection"
+    temperature: 0.3  # More deterministic for stock picking
+
+  fundamental_agent:
+    model: "primary"
+    cache_namespace: "fundamental"
+
+  strategy_agent:
+    model: "primary"
+    cache_namespace: "strategy"
+    temperature: 0.5
+
+  trading_agent:
+    model: "primary"
+    cache_namespace: "trading"
+    temperature: 0.2  # Very deterministic for execution
+
+# Embedding models
+embeddings:
+  model: "text-embedding-3-large"
+  provider: "openai"
+  dimensions: 1536
+  batch_size: 100

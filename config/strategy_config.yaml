@@ -1,0 +1,88 @@
+strategy:
+  # Risk Management
+  risk:
+    tolerance: "balanced"  # conservative | balanced | aggressive
+    max_position_size: 0.15  # 15% max per position
+    max_portfolio_risk: 0.25  # 25% max total risk
+    stop_loss_pct: 0.08  # 8% stop loss
+    take_profit_pct: 0.20  # 20% take profit
+
+  # Capital Management
+  capital:
+    initial: 100000
+    reserve_ratio: 0.10  # Keep 10% in cash
+    max_positions: 10
+    position_sizing: "equal_weight"  # equal_weight | risk_parity | kelly
+
+  # Signal Weighting (MANDATORY: WeChat >= 60%)
+  signal_weights:
+    wechat: 0.65  # WeChat signals (HIGHEST PRIORITY)
+    external: 0.20  # External sources
+    fundamental: 0.10  # Fundamental analysis
+    technical: 0.05  # Technical indicators
+
+  # Strategy Types
+  strategies:
+    enabled:
+      - "wechat_sentiment_momentum"  # Primary strategy
+      - "event_driven"
+      - "value_momentum_combo"
+      - "multi_source_weighted"
+
+    # WeChat Sentiment Momentum (Primary)
+    wechat_sentiment_momentum:
+      enabled: true
+      weight: 0.40
+      lookback_days: 7
+      min_mentions: 3
+      sentiment_threshold: 0.6
+
+    # Event Driven (WeChat + External)
+    event_driven:
+      enabled: true
+      weight: 0.30
+      event_types:
+        - "earnings"
+        - "product_launch"
+        - "regulatory"
+        - "m&a"
+      wechat_event_boost: 2.0  # 2x weight if mentioned in WeChat
+
+    # Value Momentum Combo
+    value_momentum_combo:
+      enabled: true
+      weight: 0.20
+      value_metrics:
+        - "pe_ratio"
+        - "pb_ratio"
+        - "peg_ratio"
+      momentum_lookback: 20
+
+    # Multi-Source Weighted
+    multi_source_weighted:
+      enabled: true
+      weight: 0.10
+      min_sources: 2
+      require_wechat: true  # MUST have WeChat signal
+
+  # Stock Selection Modes
+  selection:
+    modes:
+      wechat_only:
+        enabled: true
+        min_confidence: 0.7
+        max_picks_per_day: 5
+
+      wechat_plus_external:
+        enabled: true
+        min_confidence: 0.6
+        min_wechat_weight: 0.6  # WeChat must be >= 60%
+        max_picks_per_day: 10
+
+  # Backtesting
+  backtest:
+    start_date: "2024-01-01"
+    end_date: "2025-11-17"
+    benchmark: "SPY"
+    slippage: 0.001  # 0.1%
+    commission: 0.001  # 0.1%
