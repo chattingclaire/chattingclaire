@@ -33,7 +33,7 @@ class ArticleGenerator:
         # 初始化 LLM 客户端
         if llm_provider == "anthropic":
             self.client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-            self.model = model or "claude-3-5-sonnet-20241022"
+            self.model = model or "claude-sonnet-4-20250514"
         elif llm_provider == "openai":
             openai.api_key = os.getenv("OPENAI_API_KEY")
             self.model = model or "gpt-4-turbo-preview"

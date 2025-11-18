@@ -36,18 +36,23 @@ def scrape_content(config):
 
     all_content = []
 
-    # 抓取 Reddit
-    if config['monitoring']['reddit']:
+    # 抓取 Reddit（可选）
+    if config['monitoring'].get('reddit') and os.getenv('REDDIT_CLIENT_ID'):
         print("\n[Reddit] 开始抓取...")
-        reddit_scraper = RedditScraper()
-        subreddits = config['monitoring']['reddit']['subreddits']
-        reddit_posts = reddit_scraper.scrape_multiple_subreddits(
-            subreddits,
-            sort_by=config['monitoring']['reddit']['sort_by'],
-            limit_per_subreddit=config['monitoring']['reddit']['fetch_limit']
-        )
-        all_content.extend(reddit_posts)
-        print(f"[Reddit] 共抓取 {len(reddit_posts)} 篇帖子")
+        try:
+            reddit_scraper = RedditScraper()
+            subreddits = config['monitoring']['reddit']['subreddits']
+            reddit_posts = reddit_scraper.scrape_multiple_subreddits(
+                subreddits,
+                sort_by=config['monitoring']['reddit']['sort_by'],
+                limit_per_subreddit=config['monitoring']['reddit']['fetch_limit']
+            )
+            all_content.extend(reddit_posts)
+            print(f"[Reddit] 共抓取 {len(reddit_posts)} 篇帖子")
+        except Exception as e:
+            print(f"[Reddit] 抓取失败: {e}")
+    else:
+        print("\n[Reddit] 已跳过（未配置 API keys）")
 
     # 抓取 Twitter
     if config['monitoring']['twitter']:

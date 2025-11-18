@@ -24,7 +24,11 @@ class TwitterScraper:
             use_alternative: 是否使用替代方案（推荐）
         """
         self.bearer_token = bearer_token or os.getenv("TWITTER_BEARER_TOKEN")
-        self.use_alternative = use_alternative or os.getenv("TWITTER_USE_ALTERNATIVE", "true").lower() == "true"
+        # 优先使用参数，如果没有传入参数则检查环境变量
+        if use_alternative is not None:
+            self.use_alternative = use_alternative
+        else:
+            self.use_alternative = os.getenv("TWITTER_USE_ALTERNATIVE", "false").lower() == "true"
 
         if not self.use_alternative and self.bearer_token:
             try:

@@ -8,17 +8,17 @@ apis:
     model: "gpt-4-turbo-preview"
     temperature: 0.7
 
-  # Anthropic Claude API（备选）
+  # Anthropic Claude API
   anthropic:
     api_key: ${ANTHROPIC_API_KEY}
-    model: "claude-3-5-sonnet-20241022"
+    model: "claude-sonnet-4-20250514"
     max_tokens: 4000
 
   # Twitter API
   twitter:
     bearer_token: ${TWITTER_BEARER_TOKEN}
-    # 或使用替代方案（nitter, snscrape等）
-    use_alternative: true
+    # 使用官方 API
+    use_alternative: false
 
   # Reddit API
   reddit:
